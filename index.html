@@ -56,10 +56,10 @@
         <div id="view-container">
             
             <!-- Form Blueprint -->
-            <form id="appraisalForm" action="https://formsubmit.co/shafeeqsharafi@gmail.com" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+            <form id="appraisalForm" action="https://formsubmit.co/shafeeqsharafi@gmail.com" method="POST" class="p-8 space-y-8">
                 
                 <!-- Email Template FormSubmit Directives -->
-                <input type="hidden" name="_subject" value="Performance Appraisal Matrix Submission">
+                <input type="hidden" name="_subject" id="emailSubject" value="Performance Appraisal Matrix Submission">
                 <input type="hidden" name="_template" value="table"> 
 
                 <!-- Section 1: Employee Information -->
@@ -245,37 +245,38 @@
     <!-- Script Processing Engine -->
     <script>
         document.getElementById('appraisalForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent standard page jumping behavior
+            e.preventDefault(); 
             
             const form = this;
             const submitBtn = document.getElementById('submitBtn');
             const btnText = document.getElementById('btnText');
             
+            // Set dynamic subject line before transmission
+            const empNameValue = document.getElementById('empName').value;
+            document.getElementById('emailSubject').value = `Performance Appraisal Matrix - ${empNameValue}`;
+
             // Show loading state
             btnText.textContent = "Processing & Transmitting...";
             submitBtn.disabled = true;
             submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
-            // 1. Gather all inputs for local visual generation
+            // Gather all inputs for local summary generation
             const data = {
-                name: document.getElementById('empName').value,
+                name: empNameValue,
                 dept: document.getElementById('empDept').value,
                 title: document.getElementById('empTitle').value,
                 period: document.getElementById('reviewPeriod').value,
                 
-                // Section 3 Narratives
                 comments: document.getElementById('narrative_comments').value || 'N/A',
                 wins: document.getElementById('narrative_wins').value || 'N/A',
                 challenges: document.getElementById('narrative_challenges').value || 'N/A',
                 actions: document.getElementById('narrative_actions').value || 'N/A',
                 
-                // Section 5 & 6
                 training: document.getElementById('ld_training').value || 'N/A',
                 skills: document.getElementById('ld_skills').value || 'N/A',
                 areas: document.getElementById('ld_areas').value || 'N/A',
                 future: document.getElementById('future_goals').value || 'N/A',
 
-                // Competencies Matrix rows
                 commRat: document.getElementById('c_comm_rat').value,
                 commCmt: document.getElementById('c_comm_cmt').value || 'No additional notes provided.',
                 teamRat: document.getElementById('c_team_rat').value,
@@ -286,8 +287,9 @@
                 leadCmt: document.getElementById('c_lead_cmt').value || 'No additional notes provided.'
             };
 
-            // Process dynamic Section 2 Row items (Skip entirely blank fields)
+            // Build Goal Metrics Plaintext & HTML Rows
             let goalsRowsHtml = '';
+            let goalsPlainText = '';
             for(let i=1; i<=5; i++) {
                 const desc = document.getElementById(`g${i}_desc`).value;
                 const tgt = document.getElementById(`g${i}_tgt`).value;
@@ -302,42 +304,74 @@
                             <td class="p-3 border-r border-gray-200 text-gray-600">${ach || '—'}</td>
                             <td class="p-3 text-center font-bold text-mafRed bg-red-50">${rat || '—'} / 5</td>
                         </tr>`;
+                    goalsPlainText += `• Goal ${i}: ${desc || '—'} | Target: ${tgt || '—'} | Achievement: ${ach || '—'} | Score: ${rat || '—'}/5\n`;
                 }
             }
             if(!goalsRowsHtml) {
                 goalsRowsHtml = `<tr><td colspan="4" class="p-4 text-center text-gray-400 italic">No goals registered this review window.</td></tr>`;
+                goalsPlainText = "No goals registered this review window.\n";
             }
 
-            // 2. Dispatch data to FormSubmit in background loop
+            // Dispatch background data sync
             fetch(form.action, {
                 method: "POST",
                 body: new FormData(form),
                 headers: { 'Accept': 'application/json' }
             })
             .then(response => {
-                // Swap the screen layout instantly regardless of third-party API processing delays
-                renderResultScreen(data, goalsRowsHtml);
+                renderResultScreen(data, goalsRowsHtml, goalsPlainText);
             })
             .catch(error => {
-                console.error('Submission Error:', error);
-                // Graceful fallback display strategy
-                renderResultScreen(data, goalsRowsHtml);
+                console.error('Submission Error Context Handled:', error);
+                renderResultScreen(data, goalsRowsHtml, goalsPlainText);
             });
         });
 
-        function renderResultScreen(data, goalsRowsHtml) {
-            // Update Title Context Header
-            document.getElementById('interface-title').textContent = "Appraisal Ledger Submission";
-            
+        function renderResultScreen(data, goalsRowsHtml, goalsPlainText) {
+            document.getElementById('interface-title').textContent = "Appraisal Ledger Summary";
             const targetContainer = document.getElementById('view-container');
             
-            // Re-render HTML with read-only structure mapping the sent email structure perfectly
+            // Build safe email body parsing
+            const emailBodyText = 
+                `MAF FIRE PERFORMANCE APPRAISAL MATRIX\n` +
+                `======================================\n\n` +
+                `1. EMPLOYEE IDENTITY\n` +
+                `--------------------\n` +
+                `Name: ${data.name}\n` +
+                `Department: ${data.dept}\n` +
+                `Position: ${data.title}\n` +
+                `Review Period: ${data.period}\n\n` +
+                `2. GOALS & ACHIEVEMENTS\n` +
+                `------------------------\n` +
+                `${goalsPlainText}\n` +
+                `3. DETAILED NARRATIVE EVALUATION\n` +
+                `--------------------------------\n` +
+                `Employee Comments:\n"${data.comments}"\n\n` +
+                `Major Accomplishments:\n${data.wins}\n\n` +
+                `Challenges Encountered:\n${data.challenges}\n\n` +
+                `Actions Taken:\n${data.actions}\n\n` +
+                `4. COMPETENCY ASSESSMENT\n` +
+                `-----------------------\n` +
+                `• Communication: ${data.commRat}/5 -> ${data.commCmt}\n` +
+                `• Teamwork: ${data.teamRat}/5 -> ${data.teamCmt}\n` +
+                `• Problem Solving: ${data.probRat}/5 -> ${data.probCmt}\n` +
+                `• Leadership: ${data.leadRat}/5 -> ${data.leadCmt}\n\n` +
+                `5. LEARNING & DEVELOPMENT\n` +
+                `-------------------------\n` +
+                `Training Completed: ${data.training}\n` +
+                `Skills Developed: ${data.skills}\n` +
+                `Areas for Improvement: ${data.areas}\n\n` +
+                `6. FUTURE PROJECTIONS ROADMAP\n` +
+                `-----------------------------\n` +
+                `Goals for the Next Six Months:\n${data.future}\n\n` +
+                `Generated via MAF Fire Digital Portal Ledger Engine.`;
+
             targetContainer.innerHTML = `
                 <div class="p-8 space-y-8 animate-fadeIn">
                     
                     <!-- Alert Confirmation Row -->
-                    <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded text-green-800 text-sm font-medium shadow-sm flex items-center justify-between">
-                        <span>✓ Ledger Successfully Processed & Synced to Human Resources Core Inbox.</span>
+                    <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded text-green-800 text-sm font-medium shadow-sm flex flex-col sm:flex-row items-center justify-between gap-2">
+                        <span>✓ Ledger Successfully Processed & Logged to Human Resources Data Hub.</span>
                         <span class="text-xs bg-green-100 px-2 py-0.5 rounded font-bold">${new Date().toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</span>
                     </div>
 
@@ -413,39 +447,39 @@
                         </div>
                     </div>
 
-                    <!-- Section 4: Competencies Assessment Table Output -->
+                    <!-- Section 4: Competency Assessment Matrix Output -->
                     <div>
                         <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                            4. Core Competency Scores
+                            4. Competency Assessment Results
                         </h3>
                         <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
                             <table class="w-full text-left border-collapse min-w-[650px] text-sm">
                                 <thead>
                                     <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
-                                        <th class="p-3 border-r border-gray-300 w-1/3">Competency Metric</th>
-                                        <th class="p-3 border-r border-gray-300 w-1/6 text-center">Score Assigned</th>
-                                        <th class="p-3">Reflective Comments</th>
+                                        <th class="p-3 border-r border-gray-300 w-1/3">Competency</th>
+                                        <th class="p-3 border-r border-gray-300 w-1/6 text-center">Self-Rating</th>
+                                        <th class="p-3">Comments</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white text-gray-700">
                                     <tr>
-                                        <td class="p-3 font-semibold bg-gray-50 border-r border-gray-200">Communication</td>
-                                        <td class="p-3 text-center border-r border-gray-200 font-bold text-mafRed bg-red-50">${data.commRat} / 5</td>
+                                        <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Communication</td>
+                                        <td class="p-3 text-center font-bold text-mafRed border-r border-gray-200">${data.commRat} / 5</td>
                                         <td class="p-3 italic text-gray-600">${data.commCmt}</td>
                                     </tr>
                                     <tr>
-                                        <td class="p-3 font-semibold bg-gray-50 border-r border-gray-200">Teamwork</td>
-                                        <td class="p-3 text-center border-r border-gray-200 font-bold text-mafRed bg-red-50">${data.teamRat} / 5</td>
+                                        <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Teamwork</td>
+                                        <td class="p-3 text-center font-bold text-mafRed border-r border-gray-200">${data.teamRat} / 5</td>
                                         <td class="p-3 italic text-gray-600">${data.teamCmt}</td>
                                     </tr>
                                     <tr>
-                                        <td class="p-3 font-semibold bg-gray-50 border-r border-gray-200">Problem Solving</td>
-                                        <td class="p-3 text-center border-r border-gray-200 font-bold text-mafRed bg-red-50">${data.probRat} / 5</td>
+                                        <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Problem Solving</td>
+                                        <td class="p-3 text-center font-bold text-mafRed border-r border-gray-200">${data.probRat} / 5</td>
                                         <td class="p-3 italic text-gray-600">${data.probCmt}</td>
                                     </tr>
                                     <tr>
-                                        <td class="p-3 font-semibold bg-gray-50 border-r border-gray-200">Leadership</td>
-                                        <td class="p-3 text-center border-r border-gray-200 font-bold text-mafRed bg-red-50">${data.leadRat} / 5</td>
+                                        <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Leadership</td>
+                                        <td class="p-3 text-center font-bold text-mafRed border-r border-gray-200">${data.leadRat} / 5</td>
                                         <td class="p-3 italic text-gray-600">${data.leadCmt}</td>
                                     </tr>
                                 </tbody>
@@ -453,44 +487,47 @@
                         </div>
                     </div>
 
-                    <!-- Section 5 & 6: Development Roadmap Summary Output -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                                5. Learning & Development Log
-                            </h3>
-                            <div class="border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm space-y-3 text-sm">
-                                <div>
-                                    <span class="block text-xs font-bold uppercase text-gray-500">Trainings Completed:</span>
-                                    <p class="text-gray-800">${data.training}</p>
-                                </div>
-                                <div>
-                                    <span class="block text-xs font-bold uppercase text-gray-500">Skills Acquired:</span>
-                                    <p class="text-gray-800">${data.skills}</p>
-                                </div>
-                                <div>
-                                    <span class="block text-xs font-bold uppercase text-gray-500">Identified Growth Areas:</span>
-                                    <p class="text-gray-800">${data.areas}</p>
-                                </div>
+                    <!-- Section 5: Learning and Development Blocks Output -->
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                            5. Learning and Development Overview
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm text-sm">
+                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
+                                <span class="block text-xs font-bold uppercase text-gray-500 mb-1">Training Completed</span>
+                                <p class="text-gray-700">${data.training}</p>
                             </div>
-                        </div>
-
-                        <div>
-                            <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                                6. Projections (Next 6 Months)
-                            </h3>
-                            <div class="border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm text-sm h-full min-h-[178px]">
-                                <span class="block text-xs font-bold uppercase text-gray-500 mb-1">Target Roadmaps:</span>
-                                <p class="text-gray-800">${data.future}</p>
+                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
+                                <span class="block text-xs font-bold uppercase text-gray-500 mb-1">Skills Developed</span>
+                                <p class="text-gray-700">${data.skills}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
+                                <span class="block text-xs font-bold uppercase text-gray-500 mb-1">Areas for Improvement</span>
+                                <p class="text-gray-700">${data.areas}</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Visual Print Footer Hook -->
-                    <div class="pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <p class="text-xs text-gray-400 font-medium">Document ID: MAF-HR-PERF-2026A</p>
-                        <button onclick="window.print()" class="w-full sm:w-auto px-6 py-2 bg-mafDark text-white font-bold uppercase text-xs tracking-wider rounded shadow hover:bg-gray-800 transition">
-                            Print Summary Ledger
+                    <!-- Section 6: Future Projections Roadmap Output -->
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                            6. Goals for the Next Review Cycle
+                        </h3>
+                        <div class="bg-white rounded-b border border-t-0 border-gray-200 p-4 shadow-sm text-sm">
+                            <p class="text-gray-700 leading-relaxed">${data.future}</p>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Action Center -->
+                    <div class="pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="mailto:shafeeqsharafi@gmail.com?subject=${encodeURIComponent(`Performance Appraisal Matrix - ${data.name}`)}&body=${encodeURIComponent(emailBodyText)}" 
+                           class="w-full sm:w-auto text-center px-8 py-3 bg-mafRed text-white rounded-lg text-xs font-bold tracking-wider uppercase hover:bg-red-700 transition shadow-md active:scale-95 flex items-center justify-center gap-2">
+                            <span>📧 Dispatch Copy via Email Client</span>
+                        </a>
+                        
+                        <button onclick="window.location.reload();" 
+                                class="w-full sm:w-auto px-6 py-3 border border-gray-300 rounded-lg text-xs font-bold tracking-wider uppercase text-gray-600 hover:bg-gray-50 transition active:scale-95">
+                            Fill Another Appraisal
                         </button>
                     </div>
 
