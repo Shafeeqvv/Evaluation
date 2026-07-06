@@ -55,7 +55,7 @@
         <div id="view-container">
             
             <!-- Form Blueprint -->
-            <form id="appraisalForm" action="https://formsubmit.co/it@maffire.com" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+            <form id="appraisalForm" action="https://formsubmit.co/hr@mafsafety.ae" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
                 
                 <input type="hidden" name="_subject" value="Performance Appraisal Matrix Submission">
                 <input type="hidden" name="_template" value="table"> 
@@ -242,7 +242,6 @@
 
    <!-- Script Processing Engine -->
 <!-- Script Processing Engine -->
-<!-- Script Processing Engine -->
 <script>
     document.getElementById('appraisalForm').addEventListener('submit', function(e) {
         e.preventDefault(); 
@@ -255,7 +254,7 @@
         submitBtn.disabled = true;
         submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
-        // 1. Gather all inputs for HTML generation
+        // 1. Gather all inputs for local visual generation
         const data = {
             name: document.getElementById('empName').value,
             dept: document.getElementById('empDept').value,
@@ -304,20 +303,13 @@
             goalsRowsHtml = `<tr><td colspan="4" style="padding: 16px; text-align: center; color: #9ca3af; font-style: italic;">No goals registered this review window.</td></tr>`;
         }
 
-        // Generate the formatted HTML template designed with inline email-safe structures
-        const customEmailHtml = generateRichHTMLEmail(data, goalsRowsHtml);
+        // Store HTML template for Clipboard extraction (inline styles used for email compatibility)
+        window.currentAppraisalHTML = generateRichHTMLEmail(data, goalsRowsHtml);
 
-        // Package data inside standard FormData object
-        const formData = new FormData(form);
-        
-        // FormSubmit special configuration fields injected dynamically
-        formData.append('_html', customEmailHtml);
-        formData.append('_subject', `Performance Appraisal Matrix - ${data.name}`);
-
-        // 2. Dispatch payload data cleanly to FormSubmit endpoint background channel
+        // 2. Dispatch data to FormSubmit
         fetch(form.action, {
             method: "POST",
-            body: formData,
+            body: new FormData(form),
             headers: { 'Accept': 'application/json' }
         })
         .then(response => {
@@ -329,11 +321,10 @@
         });
     });
 
-    // Pure design blueprint layout configured with hardcoded styles optimized for standard mail server applications
+    // Email client template generator using clean inline styles (Tailwind doesn't render natively in email clients)
     function generateRichHTMLEmail(data, goalsRowsHtml) {
         return `
-        <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; color: #1f2937; line-height: 1.5; font-size: 14px; background-color: #ffffff; padding: 20px; border: 1px solid #e5e7eb;">
-            
+        <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; color: #1f2937; line-height: 1.5; font-size: 14px;">
             <div style="padding: 16px; background-color: #111827; color: white; font-weight: bold; text-transform: uppercase; border-bottom: 3px solid #b91c1c;">
                 1. Employee Identity
             </div>
@@ -414,8 +405,49 @@
                 <span style="font-size: 11px; font-weight: bold; color: #6b7280; text-transform: uppercase; display: block; margin-bottom: 4px;">Target Roadmaps:</span>
                 ${data.future}
             </div>
-            <span style="font-size: 11px; color: #9ca3af; font-weight: 600;">Document ID: MAF-HR-PERF-2026A</span>
+            <span style="font-size: 11px; color: #9ca3af; font-weight: 600; tracking-wider: 0.05em;">Document ID: MAF-HR-PERF-2026A</span>
         </div>`;
+    }
+
+    // Modern clipboard writer handler to copy formatted layout flawlessly
+    async function copyRichHTMLToClipboard(htmlString) {
+        try {
+            const blob = new Blob([htmlString], { type: 'text/html' });
+            const data = [new ClipboardItem({ 'text/html': blob })];
+            await navigator.clipboard.write(data);
+            return true;
+        } catch (err) {
+            console.error('Failed to copy rich HTML content: ', err);
+            return false;
+        }
+    }
+
+    function toggleMailDropdown() {
+        const dropdown = document.getElementById('mailDropdownMenu');
+        dropdown.classList.toggle('hidden');
+    }
+
+    window.addEventListener('click', function(e) {
+        const btn = document.getElementById('dropdownBtn');
+        const dropdown = document.getElementById('mailDropdownMenu');
+        if (btn && !btn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+
+    // Processes execution sequentially: Copies full UI style template -> redirects user window to client draft
+    async function processAndRedirect(clientType) {
+        const email = "hr@mafsafety.ae";
+        const subject = encodeURIComponent("Performance Appraisal Matrix Submission");
+        
+        await copyRichHTMLToClipboard(window.currentAppraisalHTML || "");
+        alert("🎉 Layout copied! Just press Paste (Ctrl+V) in your email window to insert the styled form.");
+
+        if (clientType === 'gmail') {
+            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}`, '_blank');
+        } else if (clientType === 'outlook') {
+            window.open(`https://outlook.office.com/mail/deeplink/compose?to=${email}&subject=${subject}`, '_blank');
+        }
     }
 
     function renderResultScreen(data, goalsRowsHtml) {
@@ -424,18 +456,15 @@
         
         targetContainer.innerHTML = `
             <div class="p-8 space-y-8 animate-fadeIn text-sm">
-                
-                <!-- Success Alert Row -->
+                <!-- Alert Confirmation Row -->
                 <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded text-green-800 font-medium shadow-sm flex flex-col sm:flex-row items-center justify-between gap-2">
-                    <span>✓ Ledger successfully captured and routed to Human Resources Inbox.</span>
+                    <span>✓ Ledger Successfully Processed & Synced to Human Resources Core Inbox.</span>
                     <span class="text-xs bg-green-100 px-2 py-0.5 rounded font-bold">${new Date().toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</span>
                 </div>
 
                 <!-- Section 1: Employee Identity Output -->
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                        1. Employee Identity
-                    </h3>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">1. Employee Identity</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-mafLight p-4 rounded-b border border-t-0 border-gray-200 shadow-sm">
                         <div><span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Name</span><p class="font-bold text-gray-800">${data.name}</p></div>
                         <div><span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Department</span><p class="font-semibold text-gray-800">${data.dept}</p></div>
@@ -446,9 +475,7 @@
 
                 <!-- Section 2: Goals Matrix Output -->
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                        2. Key Goals and Results Matrix
-                    </h3>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">2. Key Goals and Results Matrix</h3>
                     <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
                         <table class="w-full text-left border-collapse min-w-[650px]">
                             <thead>
@@ -468,9 +495,7 @@
 
                 <!-- Section 3: Narratives Block -->
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                        3. Detailed Written Evaluation
-                    </h3>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">3. Detailed Written Evaluation</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm">
                         <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Employee Comments</span><p class="text-gray-700 italic">"${data.comments}"</p></div>
                         <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Major Accomplishments</span><p class="text-gray-700">${data.wins}</p></div>
@@ -481,9 +506,7 @@
 
                 <!-- Section 4: Competencies Assessment Matrix -->
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                        4. Core Competency Scores
-                    </h3>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">4. Core Competency Scores</h3>
                     <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
                         <table class="w-full text-left border-collapse min-w-[650px]">
                             <thead>
@@ -505,9 +528,7 @@
 
                 <!-- Section 5: Learning & Development Log -->
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                        5. Learning & Development Log
-                    </h3>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">5. Learning & Development Log</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm">
                         <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-gray-500 mb-1">Trainings Completed:</span><p class="text-gray-700 font-medium">${data.training}</p></div>
                         <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-gray-500 mb-1">Skills Acquired:</span><p class="text-gray-700 font-medium">${data.skills}</p></div>
@@ -517,21 +538,39 @@
 
                 <!-- Section 6: Projections -->
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                        6. Projections (Next 6 Months)
-                    </h3>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">6. Projections (Next 6 Months)</h3>
                     <div class="bg-white rounded-b border border-t-0 border-gray-200 p-4 shadow-sm">
                         <span class="block text-xs font-bold uppercase text-gray-500 mb-1">Target Roadmaps:</span>
                         <p class="text-gray-700 whitespace-pre-line">${data.future}</p>
                     </div>
                 </div>
 
-                <!-- Print Action Panel (Dropdown completely removed since execution is automatic) -->
+                <!-- Dynamic Action Panel with Dropdown integration -->
                 <div class="pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <span class="text-xs text-gray-400 font-semibold tracking-wider">Document ID: MAF-HR-PERF-2026A</span>
-                    <button onclick="window.print()" class="w-full sm:w-auto px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold uppercase text-xs tracking-wider rounded-lg transition shadow-sm active:scale-95">
-                        Print Summary Ledger
-                    </button>
+                    
+                    <div class="flex gap-3 w-full sm:w-auto relative">
+                        <button onclick="window.print()" class="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold uppercase text-xs tracking-wider rounded-lg transition shadow-sm active:scale-95">
+                            Print Summary Ledger
+                        </button>
+                        
+                        <div class="relative inline-block text-left w-full sm:w-auto">
+                            <button id="dropdownBtn" onclick="toggleMailDropdown()" class="w-full px-6 py-2.5 bg-mafRed hover:bg-red-700 text-white font-bold uppercase text-xs tracking-wider rounded-lg transition shadow-md active:scale-95 flex items-center justify-center gap-2">
+                                ✉ Open In Email App ▾
+                            </button>
+                            
+                            <div id="mailDropdownMenu" class="hidden absolute right-0 bottom-full mb-2 w-48 rounded-lg shadow-xl bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 z-50 animate-fadeIn">
+                                <div class="py-1">
+                                    <button onclick="processAndRedirect('gmail')" class="flex w-full items-center px-4 py-3 text-xs uppercase tracking-wider font-bold text-gray-700 hover:bg-red-50 hover:text-mafRed transition">
+                                        <span class="mr-2 text-base">🔴</span> Google Gmail
+                                    </button>
+                                    <button onclick="processAndRedirect('outlook')" class="flex w-full items-center px-4 py-3 text-xs uppercase tracking-wider font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
+                                        <span class="mr-2 text-base">🔵</span> Microsoft Outlook
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>`;
     }
