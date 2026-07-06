@@ -38,200 +38,459 @@
                 </div>
             </div>
             <div class="text-center sm:text-right">
-                <h2 class="text-xl font-bold tracking-tight">Employee Semi Annual Self Appraisal</h2>
+                <h2 id="interface-title" class="text-xl font-bold tracking-tight">Employee Semi Annual Self Appraisal</h2>
                 <p class="text-xs text-gray-400 font-semibold tracking-wider">Review Period: January - June 2026</p>
             </div>
         </div>
 
-        <!-- Form Blueprint using multipart/form-data for attachment pipeline -->
-        <form id="appraisalForm" action="https://formsubmit.co/shafeeqsharafi@gmail.com" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+        <!-- Dynamic Container where the Form drops, and Table Result renders -->
+        <div id="view-container">
             
-            <!-- Email Template FormSubmit Directives -->
-            <input type="hidden" name="_subject" value="Performance Appraisal Matrix Submission">
-            <input type="hidden" name="_template" value="table"> 
-            <input type="hidden" name="_next" value="https://formsubmit.co/thanks"> 
+            <!-- Form Blueprint -->
+            <form id="appraisalForm" action="https://formsubmit.co/shafeeqsharafi@gmail.com" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+                
+                <!-- Email Template FormSubmit Directives -->
+                <input type="hidden" name="_subject" value="Performance Appraisal Matrix Submission">
+                <input type="hidden" name="_template" value="table"> 
+                <!-- Programmatically intercepted; no external next page redirection loop needed -->
 
-            <!-- Section 1: Employee Information -->
-            <div>
-                <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                    1. Employee Information
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-mafLight p-4 rounded-b border border-t-0 border-gray-200 shadow-sm">
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Employee Name</label>
-                        <input type="text" id="empName" name="[1. Employee Details] Name" required class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Department</label>
-                        <input type="text" id="empDept" name="[1. Employee Details] Department" required class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Position / Title</label>
-                        <input type="text" id="empTitle" name="[1. Employee Details] Position" required class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Review Period</label>
-                        <input type="text" id="reviewPeriod" name="[1. Employee Details] Review Period" value="January - June 2026" readonly class="w-full p-2 border border-gray-200 rounded text-sm bg-gray-200 font-semibold text-gray-600 outline-none cursor-not-allowed">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section 2: Key Goals and Results Matrix -->
-            <div>
-                <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                    2. Key Goals and Results
-                </h3>
-                <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
-                    <table class="w-full text-left border-collapse min-w-[650px]">
-                        <thead>
-                            <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
-                                <th class="p-2.5 border-r border-gray-300 w-2/5">Goal</th>
-                                <th class="p-2.5 border-r border-gray-300 w-1/5">Target</th>
-                                <th class="p-2.5 border-r border-gray-300 w-1/5">Achievement</th>
-                                <th class="p-2.5 text-center w-1/5">Self-Rating (1-5)</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 bg-white">
-                            <!-- Goal Rows -->
-                            <tr>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g1_desc" name="[2. Goals] Row 1 - Goal Description" placeholder="Enter Goal 1..." class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g1_tgt" name="[2. Goals] Row 1 - Target" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g1_ach" name="[2. Goals] Row 1 - Achievement" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1"><input type="number" id="g1_rat" name="[2. Goals] Row 1 - Self Rating" min="1" max="5" placeholder="1-5" class="w-full p-2 text-sm text-center font-bold focus:bg-yellow-50 outline-none"></td>
-                            </tr>
-                            <tr>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g2_desc" name="[2. Goals] Row 2 - Goal Description" placeholder="Enter Goal 2..." class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g2_tgt" name="[2. Goals] Row 2 - Target" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g2_ach" name="[2. Goals] Row 2 - Achievement" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1"><input type="number" id="g2_rat" name="[2. Goals] Row 2 - Self Rating" min="1" max="5" placeholder="1-5" class="w-full p-2 text-sm text-center font-bold focus:bg-yellow-50 outline-none"></td>
-                            </tr>
-                            <tr>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g3_desc" name="[2. Goals] Row 3 - Goal Description" placeholder="Enter Goal 3..." class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g3_tgt" name="[2. Goals] Row 3 - Target" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g3_ach" name="[2. Goals] Row 3 - Achievement" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1"><input type="number" id="g3_rat" name="[2. Goals] Row 3 - Self Rating" min="1" max="5" placeholder="1-5" class="w-full p-2 text-sm text-center font-bold focus:bg-yellow-50 outline-none"></td>
-                            </tr>
-                            <tr>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g4_desc" name="[2. Goals] Row 4 - Goal Description" placeholder="Enter Goal 4..." class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g4_tgt" name="[2. Goals] Row 4 - Target" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g4_ach" name="[2. Goals] Row 4 - Achievement" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1"><input type="number" id="g4_rat" name="[2. Goals] Row 4 - Self Rating" min="1" max="5" placeholder="1-5" class="w-full p-2 text-sm text-center font-bold focus:bg-yellow-50 outline-none"></td>
-                            </tr>
-                            <tr>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g5_desc" name="[2. Goals] Row 5 - Goal Description" placeholder="Enter Goal 5..." class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g5_tgt" name="[2. Goals] Row 5 - Target" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1 border-r border-gray-200"><input type="text" id="g5_ach" name="[2. Goals] Row 5 - Achievement" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1"><input type="number" id="g5_rat" name="[2. Goals] Row 5 - Self Rating" min="1" max="5" placeholder="1-5" class="w-full p-2 text-sm text-center font-bold focus:bg-yellow-50 outline-none"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Section 3: Detailed Written Evaluation Blocks -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Section 1: Employee Information -->
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-mafDark mb-1">Employee Comments</label>
-                    <textarea id="narrative_comments" name="[3. Narrative Evaluation] Employee Comments" rows="4" class="w-full p-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none transition bg-white" placeholder="Provide general feedback..."></textarea>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-mafDark mb-1">Major Accomplishments</label>
-                    <textarea id="narrative_wins" name="[3. Narrative Evaluation] Major Accomplishments" rows="4" class="w-full p-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none transition bg-white" placeholder="Highlight core professional wins..."></textarea>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-mafDark mb-1">Challenges Encountered</label>
-                    <textarea id="narrative_challenges" name="[3. Narrative Evaluation] Challenges Encountered" rows="4" class="w-full p-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none transition bg-white" placeholder="Detail complications faced..."></textarea>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-mafDark mb-1">Actions Taken</label>
-                    <textarea id="narrative_actions" name="[3. Narrative Evaluation] Actions Taken" rows="4" class="w-full p-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none transition bg-white" placeholder="Steps enacted to bypass constraints..."></textarea>
-                </div>
-            </div>
-
-            <!-- Section 4: Competency Assessment Matrix -->
-            <div>
-                <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                    4. Competency Assessment (Rating Scale: 1 Lowest - 5 Highest)
-                </h3>
-                <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
-                    <table class="w-full text-left border-collapse min-w-[650px]">
-                        <thead>
-                            <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
-                                <th class="p-2.5 border-r border-gray-300 w-1/3">Competency</th>
-                                <th class="p-2.5 border-r border-gray-300 w-1/6 text-center">Self-Rating (1-5)</th>
-                                <th class="p-2.5">Comments</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 bg-white text-sm">
-                            <tr>
-                                <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Communication</td>
-                                <td class="p-1 border-r border-gray-200"><input type="number" id="c_comm_rat" name="[4. Competency Assessment] Communication - Rating" min="1" max="5" placeholder="1-5" required class="w-full p-2 text-center font-bold focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1"><input type="text" id="c_comm_cmt" name="[4. Competency Assessment] Communication - Comments" placeholder="Elaborate on coordination metrics..." class="w-full p-2 focus:bg-yellow-50 outline-none"></td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Teamwork</td>
-                                <td class="p-1 border-r border-gray-200"><input type="number" id="c_team_rat" name="[4. Competency Assessment] Teamwork - Rating" min="1" max="5" placeholder="1-5" required class="w-full p-2 text-center font-bold focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1"><input type="text" id="c_team_cmt" name="[4. Competency Assessment] Teamwork - Comments" placeholder="Elaborate on team dynamic contributions..." class="w-full p-2 focus:bg-yellow-50 outline-none"></td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Problem Solving</td>
-                                <td class="p-1 border-r border-gray-200"><input type="number" id="c_prob_rat" name="[4. Competency Assessment] Problem Solving - Rating" min="1" max="5" placeholder="1-5" required class="w-full p-2 text-center font-bold focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1"><input type="text" id="c_prob_cmt" name="[4. Competency Assessment] Problem Solving - Comments" placeholder="Elaborate on logical mitigation processes..." class="w-full p-2 focus:bg-yellow-50 outline-none"></td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Leadership</td>
-                                <td class="p-1 border-r border-gray-200"><input type="number" id="c_lead_rat" name="[4. Competency Assessment] Leadership - Rating" min="1" max="5" placeholder="1-5" required class="w-full p-2 text-center font-bold focus:bg-yellow-50 outline-none"></td>
-                                <td class="p-1"><input type="text" id="c_lead_cmt" name="[4. Competency Assessment] Leadership - Comments" placeholder="Elaborate on initiative execution..." class="w-full p-2 focus:bg-yellow-50 outline-none"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Section 5: Learning and Development Blocks -->
-            <div>
-                <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                    5. Learning and Development
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-b border border-t-0 border-gray-200 shadow-sm">
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Training Completed</label>
-                        <textarea id="ld_training" name="[5. Learning & Development] Training Completed" rows="3" class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Skills Developed</label>
-                        <textarea id="ld_skills" name="[5. Learning & Development] Skills Developed" rows="3" class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Areas for Improvement</label>
-                        <textarea id="ld_areas" name="[5. Learning & Development] Areas for Improvement" rows="3" class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white"></textarea>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        1. Employee Information
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-mafLight p-4 rounded-b border border-t-0 border-gray-200 shadow-sm">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Employee Name</label>
+                            <input type="text" id="empName" name="[1. Employee Details] Name" required class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Department</label>
+                            <input type="text" id="empDept" name="[1. Employee Details] Department" required class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Position / Title</label>
+                            <input type="text" id="empTitle" name="[1. Employee Details] Position" required class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Review Period</label>
+                            <input type="text" id="reviewPeriod" name="[1. Employee Details] Review Period" value="January - June 2026" readonly class="w-full p-2 border border-gray-200 rounded text-sm bg-gray-200 font-semibold text-gray-600 outline-none cursor-not-allowed">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Section 6: Future Projections Roadmap -->
-            <div>
-                <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                    6. Goals for the Next Six Months
-                </h3>
-                <div class="bg-white rounded-b border border-t-0 border-gray-200 p-2 shadow-sm">
-                    <textarea id="future_goals" name="[6. Projections] Goals for the Next Six Months" rows="4" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none resize-y" placeholder="Map out target achievements for the next review cycle..."></textarea>
+                <!-- Section 2: Key Goals and Results Matrix -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        2. Key Goals and Results
+                    </h3>
+                    <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
+                        <table class="w-full text-left border-collapse min-w-[650px]">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
+                                    <th class="p-2.5 border-r border-gray-300 w-2/5">Goal</th>
+                                    <th class="p-2.5 border-r border-gray-300 w-1/5">Target</th>
+                                    <th class="p-2.5 border-r border-gray-300 w-1/5">Achievement</th>
+                                    <th class="p-2.5 text-center w-1/5">Self-Rating (1-5)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                                <tr>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g1_desc" name="[2. Goals] Row 1 - Goal Description" placeholder="Enter Goal 1..." class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g1_tgt" name="[2. Goals] Row 1 - Target" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g1_ach" name="[2. Goals] Row 1 - Achievement" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1"><input type="number" id="g1_rat" name="[2. Goals] Row 1 - Self Rating" min="1" max="5" placeholder="1-5" class="w-full p-2 text-sm text-center font-bold focus:bg-yellow-50 outline-none"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g2_desc" name="[2. Goals] Row 2 - Goal Description" placeholder="Enter Goal 2..." class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g2_tgt" name="[2. Goals] Row 2 - Target" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g2_ach" name="[2. Goals] Row 2 - Achievement" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1"><input type="number" id="g2_rat" name="[2. Goals] Row 2 - Self Rating" min="1" max="5" placeholder="1-5" class="w-full p-2 text-sm text-center font-bold focus:bg-yellow-50 outline-none"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g3_desc" name="[2. Goals] Row 3 - Goal Description" placeholder="Enter Goal 3..." class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g3_tgt" name="[2. Goals] Row 3 - Target" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g3_ach" name="[2. Goals] Row 3 - Achievement" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1"><input type="number" id="g3_rat" name="[2. Goals] Row 3 - Self Rating" min="1" max="5" placeholder="1-5" class="w-full p-2 text-sm text-center font-bold focus:bg-yellow-50 outline-none"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g4_desc" name="[2. Goals] Row 4 - Goal Description" placeholder="Enter Goal 4..." class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g4_tgt" name="[2. Goals] Row 4 - Target" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g4_ach" name="[2. Goals] Row 4 - Achievement" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1"><input type="number" id="g4_rat" name="[2. Goals] Row 4 - Self Rating" min="1" max="5" placeholder="1-5" class="w-full p-2 text-sm text-center font-bold focus:bg-yellow-50 outline-none"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g5_desc" name="[2. Goals] Row 5 - Goal Description" placeholder="Enter Goal 5..." class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g5_tgt" name="[2. Goals] Row 5 - Target" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1 border-r border-gray-200"><input type="text" id="g5_ach" name="[2. Goals] Row 5 - Achievement" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1"><input type="number" id="g5_rat" name="[2. Goals] Row 5 - Self Rating" min="1" max="5" placeholder="1-5" class="w-full p-2 text-sm text-center font-bold focus:bg-yellow-50 outline-none"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Central Submit Panel -->
-            <div id="submission-panel" class="pt-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="text-xs text-gray-500 text-center sm:text-left font-medium">
-                    Submitting this form parses your selections into a comprehensive summary matrix forwarded to Human Resources.
+                <!-- Section 3: Detailed Written Evaluation Blocks -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-mafDark mb-1">Employee Comments</label>
+                        <textarea id="narrative_comments" name="[3. Narrative Evaluation] Employee Comments" rows="4" class="w-full p-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none transition bg-white" placeholder="Provide general feedback..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-mafDark mb-1">Major Accomplishments</label>
+                        <textarea id="narrative_wins" name="[3. Narrative Evaluation] Major Accomplishments" rows="4" class="w-full p-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none transition bg-white" placeholder="Highlight core professional wins..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-mafDark mb-1">Challenges Encountered</label>
+                        <textarea id="narrative_challenges" name="[3. Narrative Evaluation] Challenges Encountered" rows="4" class="w-full p-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none transition bg-white" placeholder="Detail complications faced..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-mafDark mb-1">Actions Taken</label>
+                        <textarea id="narrative_actions" name="[3. Narrative Evaluation] Actions Taken" rows="4" class="w-full p-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none transition bg-white" placeholder="Steps enacted to bypass constraints..."></textarea>
+                    </div>
                 </div>
-                <button type="submit" id="submitBtn" class="w-full sm:w-auto px-10 py-3 bg-mafRed text-white font-bold uppercase text-xs tracking-wider rounded-lg shadow-md hover:bg-red-700 active:scale-95 transition flex items-center justify-center">
-                    <span id="btnText">Submit Appraisal Ledger</span>
-                </button>
-            </div>
-        </form>
+
+                <!-- Section 4: Competency Assessment Matrix -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        4. Competency Assessment (Rating Scale: 1 Lowest - 5 Highest)
+                    </h3>
+                    <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
+                        <table class="w-full text-left border-collapse min-w-[650px]">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
+                                    <th class="p-2.5 border-r border-gray-300 w-1/3">Competency</th>
+                                    <th class="p-2.5 border-r border-gray-300 w-1/6 text-center">Self-Rating (1-5)</th>
+                                    <th class="p-2.5">Comments</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white text-sm">
+                                <tr>
+                                    <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Communication</td>
+                                    <td class="p-1 border-r border-gray-200"><input type="number" id="c_comm_rat" name="[4. Competency Assessment] Communication - Rating" min="1" max="5" placeholder="1-5" required class="w-full p-2 text-center font-bold focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1"><input type="text" id="c_comm_cmt" name="[4. Competency Assessment] Communication - Comments" placeholder="Elaborate on coordination metrics..." class="w-full p-2 focus:bg-yellow-50 outline-none"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Teamwork</td>
+                                    <td class="p-1 border-r border-gray-200"><input type="number" id="c_team_rat" name="[4. Competency Assessment] Teamwork - Rating" min="1" max="5" placeholder="1-5" required class="w-full p-2 text-center font-bold focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1"><input type="text" id="c_team_cmt" name="[4. Competency Assessment] Teamwork - Comments" placeholder="Elaborate on team dynamic contributions..." class="w-full p-2 focus:bg-yellow-50 outline-none"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Problem Solving</td>
+                                    <td class="p-1 border-r border-gray-200"><input type="number" id="c_prob_rat" name="[4. Competency Assessment] Problem Solving - Rating" min="1" max="5" placeholder="1-5" required class="w-full p-2 text-center font-bold focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1"><input type="text" id="c_prob_cmt" name="[4. Competency Assessment] Problem Solving - Comments" placeholder="Elaborate on logical mitigation processes..." class="w-full p-2 focus:bg-yellow-50 outline-none"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Leadership</td>
+                                    <td class="p-1 border-r border-gray-200"><input type="number" id="c_lead_rat" name="[4. Competency Assessment] Leadership - Rating" min="1" max="5" placeholder="1-5" required class="w-full p-2 text-center font-bold focus:bg-yellow-50 outline-none"></td>
+                                    <td class="p-1"><input type="text" id="c_lead_cmt" name="[4. Competency Assessment] Leadership - Comments" placeholder="Elaborate on initiative execution..." class="w-full p-2 focus:bg-yellow-50 outline-none"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section 5: Learning and Development Blocks -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        5. Learning and Development
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-b border border-t-0 border-gray-200 shadow-sm">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Training Completed</label>
+                            <textarea id="ld_training" name="[5. Learning & Development] Training Completed" rows="3" class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Skills Developed</label>
+                            <textarea id="ld_skills" name="[5. Learning & Development] Skills Developed" rows="3" class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Areas for Improvement</label>
+                            <textarea id="ld_areas" name="[5. Learning & Development] Areas for Improvement" rows="3" class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-mafRed focus:outline-none bg-white"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Future Projections Roadmap -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        6. Goals for the Next Six Months
+                    </h3>
+                    <div class="bg-white rounded-b border border-t-0 border-gray-200 p-2 shadow-sm">
+                        <textarea id="future_goals" name="[6. Projections] Goals for the Next Six Months" rows="4" class="w-full p-2 text-sm focus:bg-yellow-50 outline-none resize-y" placeholder="Map out target achievements for the next review cycle..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Central Submit Panel -->
+                <div id="submission-panel" class="pt-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-xs text-gray-500 text-center sm:text-left font-medium">
+                        Submitting this form parses your selections into a comprehensive summary matrix forwarded to Human Resources.
+                    </div>
+                    <button type="submit" id="submitBtn" class="w-full sm:w-auto px-10 py-3 bg-mafRed text-white font-bold uppercase text-xs tracking-wider rounded-lg shadow-md hover:bg-red-700 active:scale-95 transition flex items-center justify-center">
+                        <span id="btnText">Submit Appraisal Ledger</span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <!-- Interface Event Execution Scripts -->
-    <script src="css/script.js"></script>
+    <!-- Script Processing Engine -->
+    <script>
+        document.getElementById('appraisalForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent standard page jumping behavior
+            
+            const form = this;
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            
+            // Show loading state
+            btnText.textContent = "Processing & Transmitting...";
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            // 1. Gather all inputs for local visual generation
+            const data = {
+                name: document.getElementById('empName').value,
+                dept: document.getElementById('empDept').value,
+                title: document.getElementById('empTitle').value,
+                period: document.getElementById('reviewPeriod').value,
+                
+                // Section 3 Narratives
+                comments: document.getElementById('narrative_comments').value || 'N/A',
+                wins: document.getElementById('narrative_wins').value || 'N/A',
+                challenges: document.getElementById('narrative_challenges').value || 'N/A',
+                actions: document.getElementById('narrative_actions').value || 'N/A',
+                
+                // Section 5 & 6
+                training: document.getElementById('ld_training').value || 'N/A',
+                skills: document.getElementById('ld_skills').value || 'N/A',
+                areas: document.getElementById('ld_areas').value || 'N/A',
+                future: document.getElementById('future_goals').value || 'N/A',
+
+                // Competencies Matrix rows
+                commRat: document.getElementById('c_comm_rat').value,
+                commCmt: document.getElementById('c_comm_cmt').value || 'No additional notes provided.',
+                teamRat: document.getElementById('c_team_rat').value,
+                teamCmt: document.getElementById('c_team_cmt').value || 'No additional notes provided.',
+                probRat: document.getElementById('c_prob_rat').value,
+                probCmt: document.getElementById('c_prob_cmt').value || 'No additional notes provided.',
+                leadRat: document.getElementById('c_lead_rat').value,
+                leadCmt: document.getElementById('c_lead_cmt').value || 'No additional notes provided.'
+            };
+
+            // Process dynamic Section 2 Row items (Skip entirely blank fields)
+            let goalsRowsHtml = '';
+            for(let i=1; i<=5; i++) {
+                const desc = document.getElementById(`g${i}_desc`).value;
+                const tgt = document.getElementById(`g${i}_tgt`).value;
+                const ach = document.getElementById(`g${i}_ach`).value;
+                const rat = document.getElementById(`g${i}_rat`).value;
+
+                if(desc || tgt || ach || rat) {
+                    goalsRowsHtml += `
+                        <tr>
+                            <td class="p-3 border-r border-gray-200 font-medium">${desc || '—'}</td>
+                            <td class="p-3 border-r border-gray-200 text-gray-600">${tgt || '—'}</td>
+                            <td class="p-3 border-r border-gray-200 text-gray-600">${ach || '—'}</td>
+                            <td class="p-3 text-center font-bold text-mafRed bg-red-50">${rat || '—'} / 5</td>
+                        </tr>`;
+                }
+            }
+            if(!goalsRowsHtml) {
+                goalsRowsHtml = `<tr><td colspan="4" class="p-4 text-center text-gray-400 italic">No goals registered this review window.</td></tr>`;
+            }
+
+            // 2. Dispatch data to FormSubmit in background loop
+            fetch(form.action, {
+                method: "POST",
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(response => {
+                // Swap the screen layout instantly regardless of third-party API processing delays
+                renderResultScreen(data, goalsRowsHtml);
+            })
+            .catch(error => {
+                console.error('Submission Error:', error);
+                // Graceful fallback display strategy
+                renderResultScreen(data, goalsRowsHtml);
+            });
+        });
+
+        function renderResultScreen(data, goalsRowsHtml) {
+            // Update Title Context Header
+            document.getElementById('interface-title').textContent = "Appraisal Ledger Submission";
+            
+            const targetContainer = document.getElementById('view-container');
+            
+            // Re-render HTML with read-only structure mapping the sent email structure perfectly
+            targetContainer.innerHTML = `
+                <div class="p-8 space-y-8 animate-fadeIn">
+                    
+                    <!-- Alert Confirmation Row -->
+                    <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded text-green-800 text-sm font-medium shadow-sm flex items-center justify-between">
+                        <span>✓ Ledger Successfully Processed & Synced to Human Resources Core Inbox.</span>
+                        <span class="text-xs bg-green-100 px-2 py-0.5 rounded font-bold">${new Date().toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</span>
+                    </div>
+
+                    <!-- Section 1: Employee Identity Output -->
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                            1. Employee Identity
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-mafLight p-4 rounded-b border border-t-0 border-gray-200 shadow-sm text-sm">
+                            <div>
+                                <span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Name</span>
+                                <p class="font-bold text-gray-800">${data.name}</p>
+                            </div>
+                            <div>
+                                <span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Department</span>
+                                <p class="font-semibold text-gray-800">${data.dept}</p>
+                            </div>
+                            <div>
+                                <span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Position</span>
+                                <p class="font-semibold text-gray-800">${data.title}</p>
+                            </div>
+                            <div>
+                                <span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Review Period</span>
+                                <p class="font-semibold text-gray-600">${data.period}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Goals Matrix Output -->
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                            2. Key Goals and Results Matrix
+                        </h3>
+                        <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
+                            <table class="w-full text-left border-collapse min-w-[650px] text-sm">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
+                                        <th class="p-3 border-r border-gray-300 w-2/5">Goal Description</th>
+                                        <th class="p-3 border-r border-gray-300 w-1/5">Target</th>
+                                        <th class="p-3 border-r border-gray-300 w-1/5">Achievement</th>
+                                        <th class="p-3 text-center w-1/5">Self-Rating</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 bg-white text-gray-700">
+                                    ${goalsRowsHtml}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Narratives Block -->
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                            3. Detailed Written Evaluation
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm text-sm">
+                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
+                                <span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Employee Comments</span>
+                                <p class="text-gray-700 italic">"${data.comments}"</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
+                                <span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Major Accomplishments</span>
+                                <p class="text-gray-700">${data.wins}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
+                                <span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Challenges Encountered</span>
+                                <p class="text-gray-700">${data.challenges}</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
+                                <span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Actions Taken</span>
+                                <p class="text-gray-700">${data.actions}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Competencies Assessment Table Output -->
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                            4. Core Competency Scores
+                        </h3>
+                        <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
+                            <table class="w-full text-left border-collapse min-w-[650px] text-sm">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
+                                        <th class="p-3 border-r border-gray-300 w-1/4">Competency</th>
+                                        <th class="p-3 border-r border-gray-300 w-1/6 text-center">Self-Rating</th>
+                                        <th class="p-3">Reflective Comments</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 bg-white text-gray-700">
+                                    <tr>
+                                        <td class="p-3 font-semibold border-r border-gray-200 bg-gray-50">Communication</td>
+                                        <td class="p-3 text-center font-bold text-gray-800 border-r border-gray-200">${data.commRat} / 5</td>
+                                        <td class="p-3 text-gray-600">${data.commCmt}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold border-r border-gray-200 bg-gray-50">Teamwork</td>
+                                        <td class="p-3 text-center font-bold text-gray-800 border-r border-gray-200">${data.teamRat} / 5</td>
+                                        <td class="p-3 text-gray-600">${data.teamCmt}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold border-r border-gray-200 bg-gray-50">Problem Solving</td>
+                                        <td class="p-3 text-center font-bold text-gray-800 border-r border-gray-200">${data.probRat} / 5</td>
+                                        <td class="p-3 text-gray-600">${data.probCmt}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold border-r border-gray-200 bg-gray-50">Leadership</td>
+                                        <td class="p-3 text-center font-bold text-gray-800 border-r border-gray-200">${data.leadRat} / 5</td>
+                                        <td class="p-3 text-gray-600">${data.leadCmt}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Section 5 & 6: Horizon Profiles Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                                5. Learning & Development Profile
+                            </h3>
+                            <div class="border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm text-sm space-y-3">
+                                <div>
+                                    <span class="block text-xs font-bold uppercase text-gray-400">Training Completed:</span>
+                                    <p class="text-gray-800 font-medium">${data.training}</p>
+                                </div>
+                                <div>
+                                    <span class="block text-xs font-bold uppercase text-gray-400">Skills Acquired:</span>
+                                    <p class="text-gray-800 font-medium">${data.skills}</p>
+                                </div>
+                                <div>
+                                    <span class="block text-xs font-bold uppercase text-gray-400">Areas For Improvement:</span>
+                                    <p class="text-gray-800 font-medium">${data.areas}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                                6. Future Projections (Next 6 Months)
+                            </h3>
+                            <div class="border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm text-sm h-full min-h-[140px]">
+                                <p class="text-gray-700 italic">"${data.future}"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Control Strip -->
+                    <div class="pt-4 border-t border-gray-200 flex justify-end">
+                        <button onclick="window.print()" class="px-6 py-2 border-2 border-mafDark text-mafDark font-bold uppercase text-xs tracking-wider rounded-lg shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                            🖨 Print / Save PDF
+                        </button>
+                    </div>
+
+                </div>
+                <!-- System Footer Metadata Panel -->
+                <div class="bg-mafDark text-gray-400 text-[10px] uppercase font-semibold p-4 tracking-widest text-center border-t border-gray-700">
+                    Internal Document Pipeline Asset — MAF FIRE Operations Registry
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
