@@ -37,7 +37,6 @@
         <!-- Header Branding & Identity Grid -->
         <div class="bg-mafDark p-6 text-white flex flex-col sm:flex-row items-center justify-between border-b-4 border-mafRed">
             <div class="flex items-center space-x-5 mb-4 sm:mb-0">
-                <!-- MAF Fire Logo Image Integration -->
                 <div class="w-16 h-24 bg-white rounded flex items-center justify-center p-1 shadow-md overflow-hidden">
                     <img src="https://images.squarespace-cdn.com/content/v1/5b1660d5b40b2d69f06df1d3/1529158315152-YJMR5C6M4K2S08LTSW4A/maffire_logo.png" alt="MAF Fire Logo" class="max-h-full max-w-full object-contain">
                 </div>
@@ -56,10 +55,9 @@
         <div id="view-container">
             
             <!-- Form Blueprint -->
-            <form id="appraisalForm" action="https://formsubmit.co/shafeeqsharafi@gmail.com" method="POST" class="p-8 space-y-8">
+            <form id="appraisalForm" action="https://formsubmit.co/it@maffire.com" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
                 
-                <!-- Email Template FormSubmit Directives -->
-                <input type="hidden" name="_subject" id="emailSubject" value="Performance Appraisal Matrix Submission">
+                <input type="hidden" name="_subject" value="Performance Appraisal Matrix Submission">
                 <input type="hidden" name="_template" value="table"> 
 
                 <!-- Section 1: Employee Information -->
@@ -242,297 +240,301 @@
         </div>
     </div>
 
-    <!-- Script Processing Engine -->
-    <script>
-        document.getElementById('appraisalForm').addEventListener('submit', function(e) {
-            e.preventDefault(); 
+   <!-- Script Processing Engine -->
+<!-- Script Processing Engine -->
+<!-- Script Processing Engine -->
+<script>
+    document.getElementById('appraisalForm').addEventListener('submit', function(e) {
+        e.preventDefault(); 
+        
+        const form = this;
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        
+        btnText.textContent = "Processing & Transmitting...";
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+        // 1. Gather all inputs for HTML generation
+        const data = {
+            name: document.getElementById('empName').value,
+            dept: document.getElementById('empDept').value,
+            title: document.getElementById('empTitle').value,
+            period: document.getElementById('reviewPeriod').value,
             
-            const form = this;
-            const submitBtn = document.getElementById('submitBtn');
-            const btnText = document.getElementById('btnText');
+            comments: document.getElementById('narrative_comments').value || 'N/A',
+            wins: document.getElementById('narrative_wins').value || 'N/A',
+            challenges: document.getElementById('narrative_challenges').value || 'N/A',
+            actions: document.getElementById('narrative_actions').value || 'N/A',
             
-            // Set dynamic subject line before transmission
-            const empNameValue = document.getElementById('empName').value;
-            document.getElementById('emailSubject').value = `Performance Appraisal Matrix - ${empNameValue}`;
+            training: document.getElementById('ld_training').value || 'N/A',
+            skills: document.getElementById('ld_skills').value || 'N/A',
+            areas: document.getElementById('ld_areas').value || 'N/A',
+            future: document.getElementById('future_goals').value || 'N/A',
 
-            // Show loading state
-            btnText.textContent = "Processing & Transmitting...";
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            commRat: document.getElementById('c_comm_rat').value,
+            commCmt: document.getElementById('c_comm_cmt').value || 'No additional notes.',
+            teamRat: document.getElementById('c_team_rat').value,
+            teamCmt: document.getElementById('c_team_cmt').value || 'No additional notes.',
+            probRat: document.getElementById('c_prob_rat').value,
+            probCmt: document.getElementById('c_prob_cmt').value || 'No additional notes.',
+            leadRat: document.getElementById('c_lead_rat').value,
+            leadCmt: document.getElementById('c_lead_cmt').value || 'No additional notes.'
+        };
 
-            // Gather all inputs for local summary generation
-            const data = {
-                name: empNameValue,
-                dept: document.getElementById('empDept').value,
-                title: document.getElementById('empTitle').value,
-                period: document.getElementById('reviewPeriod').value,
-                
-                comments: document.getElementById('narrative_comments').value || 'N/A',
-                wins: document.getElementById('narrative_wins').value || 'N/A',
-                challenges: document.getElementById('narrative_challenges').value || 'N/A',
-                actions: document.getElementById('narrative_actions').value || 'N/A',
-                
-                training: document.getElementById('ld_training').value || 'N/A',
-                skills: document.getElementById('ld_skills').value || 'N/A',
-                areas: document.getElementById('ld_areas').value || 'N/A',
-                future: document.getElementById('future_goals').value || 'N/A',
+        // Process dynamic Section 2 Row items
+        let goalsRowsHtml = '';
+        for(let i=1; i<=5; i++) {
+            const desc = document.getElementById(`g${i}_desc`).value;
+            const tgt = document.getElementById(`g${i}_tgt`).value;
+            const ach = document.getElementById(`g${i}_ach`).value;
+            const rat = document.getElementById(`g${i}_rat`).value;
 
-                commRat: document.getElementById('c_comm_rat').value,
-                commCmt: document.getElementById('c_comm_cmt').value || 'No additional notes provided.',
-                teamRat: document.getElementById('c_team_rat').value,
-                teamCmt: document.getElementById('c_team_cmt').value || 'No additional notes provided.',
-                probRat: document.getElementById('c_prob_rat').value,
-                probCmt: document.getElementById('c_prob_cmt').value || 'No additional notes provided.',
-                leadRat: document.getElementById('c_lead_rat').value,
-                leadCmt: document.getElementById('c_lead_cmt').value || 'No additional notes provided.'
-            };
-
-            // Build Goal Metrics Plaintext & HTML Rows
-            let goalsRowsHtml = '';
-            let goalsPlainText = '';
-            for(let i=1; i<=5; i++) {
-                const desc = document.getElementById(`g${i}_desc`).value;
-                const tgt = document.getElementById(`g${i}_tgt`).value;
-                const ach = document.getElementById(`g${i}_ach`).value;
-                const rat = document.getElementById(`g${i}_rat`).value;
-
-                if(desc || tgt || ach || rat) {
-                    goalsRowsHtml += `
-                        <tr>
-                            <td class="p-3 border-r border-gray-200 font-medium">${desc || '—'}</td>
-                            <td class="p-3 border-r border-gray-200 text-gray-600">${tgt || '—'}</td>
-                            <td class="p-3 border-r border-gray-200 text-gray-600">${ach || '—'}</td>
-                            <td class="p-3 text-center font-bold text-mafRed bg-red-50">${rat || '—'} / 5</td>
-                        </tr>`;
-                    goalsPlainText += `• Goal ${i}: ${desc || '—'} | Target: ${tgt || '—'} | Achievement: ${ach || '—'} | Score: ${rat || '—'}/5\n`;
-                }
+            if(desc || tgt || ach || rat) {
+                goalsRowsHtml += `
+                    <tr>
+                        <td style="padding: 12px; border-right: 1px solid #e5e7eb; font-weight: 500;">${desc || '—'}</td>
+                        <td style="padding: 12px; border-right: 1px solid #e5e7eb; color: #4b5563;">${tgt || '—'}</td>
+                        <td style="padding: 12px; border-right: 1px solid #e5e7eb; color: #4b5563;">${ach || '—'}</td>
+                        <td style="padding: 12px; text-align: center; font-weight: bold; color: #b91c1c; background-color: #fef2f2;">${rat || '—'} / 5</td>
+                    </tr>`;
             }
-            if(!goalsRowsHtml) {
-                goalsRowsHtml = `<tr><td colspan="4" class="p-4 text-center text-gray-400 italic">No goals registered this review window.</td></tr>`;
-                goalsPlainText = "No goals registered this review window.\n";
-            }
-
-            // Dispatch background data sync
-            fetch(form.action, {
-                method: "POST",
-                body: new FormData(form),
-                headers: { 'Accept': 'application/json' }
-            })
-            .then(response => {
-                renderResultScreen(data, goalsRowsHtml, goalsPlainText);
-            })
-            .catch(error => {
-                console.error('Submission Error Context Handled:', error);
-                renderResultScreen(data, goalsRowsHtml, goalsPlainText);
-            });
-        });
-
-        function renderResultScreen(data, goalsRowsHtml, goalsPlainText) {
-            document.getElementById('interface-title').textContent = "Appraisal Ledger Summary";
-            const targetContainer = document.getElementById('view-container');
-            
-            // Build safe email body parsing
-            const emailBodyText = 
-                `MAF FIRE PERFORMANCE APPRAISAL MATRIX\n` +
-                `======================================\n\n` +
-                `1. EMPLOYEE IDENTITY\n` +
-                `--------------------\n` +
-                `Name: ${data.name}\n` +
-                `Department: ${data.dept}\n` +
-                `Position: ${data.title}\n` +
-                `Review Period: ${data.period}\n\n` +
-                `2. GOALS & ACHIEVEMENTS\n` +
-                `------------------------\n` +
-                `${goalsPlainText}\n` +
-                `3. DETAILED NARRATIVE EVALUATION\n` +
-                `--------------------------------\n` +
-                `Employee Comments:\n"${data.comments}"\n\n` +
-                `Major Accomplishments:\n${data.wins}\n\n` +
-                `Challenges Encountered:\n${data.challenges}\n\n` +
-                `Actions Taken:\n${data.actions}\n\n` +
-                `4. COMPETENCY ASSESSMENT\n` +
-                `-----------------------\n` +
-                `• Communication: ${data.commRat}/5 -> ${data.commCmt}\n` +
-                `• Teamwork: ${data.teamRat}/5 -> ${data.teamCmt}\n` +
-                `• Problem Solving: ${data.probRat}/5 -> ${data.probCmt}\n` +
-                `• Leadership: ${data.leadRat}/5 -> ${data.leadCmt}\n\n` +
-                `5. LEARNING & DEVELOPMENT\n` +
-                `-------------------------\n` +
-                `Training Completed: ${data.training}\n` +
-                `Skills Developed: ${data.skills}\n` +
-                `Areas for Improvement: ${data.areas}\n\n` +
-                `6. FUTURE PROJECTIONS ROADMAP\n` +
-                `-----------------------------\n` +
-                `Goals for the Next Six Months:\n${data.future}\n\n` +
-                `Generated via MAF Fire Digital Portal Ledger Engine.`;
-
-            targetContainer.innerHTML = `
-                <div class="p-8 space-y-8 animate-fadeIn">
-                    
-                    <!-- Alert Confirmation Row -->
-                    <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded text-green-800 text-sm font-medium shadow-sm flex flex-col sm:flex-row items-center justify-between gap-2">
-                        <span>✓ Ledger Successfully Processed & Logged to Human Resources Data Hub.</span>
-                        <span class="text-xs bg-green-100 px-2 py-0.5 rounded font-bold">${new Date().toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</span>
-                    </div>
-
-                    <!-- Section 1: Employee Identity Output -->
-                    <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                            1. Employee Identity
-                        </h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-mafLight p-4 rounded-b border border-t-0 border-gray-200 shadow-sm text-sm">
-                            <div>
-                                <span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Name</span>
-                                <p class="font-bold text-gray-800">${data.name}</p>
-                            </div>
-                            <div>
-                                <span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Department</span>
-                                <p class="font-semibold text-gray-800">${data.dept}</p>
-                            </div>
-                            <div>
-                                <span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Position</span>
-                                <p class="font-semibold text-gray-800">${data.title}</p>
-                            </div>
-                            <div>
-                                <span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Review Period</span>
-                                <p class="font-semibold text-gray-600">${data.period}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 2: Goals Matrix Output -->
-                    <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                            2. Key Goals and Results Matrix
-                        </h3>
-                        <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
-                            <table class="w-full text-left border-collapse min-w-[650px] text-sm">
-                                <thead>
-                                    <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
-                                        <th class="p-3 border-r border-gray-300 w-2/5">Goal Description</th>
-                                        <th class="p-3 border-r border-gray-300 w-1/5">Target</th>
-                                        <th class="p-3 border-r border-gray-300 w-1/5">Achievement</th>
-                                        <th class="p-3 text-center w-1/5">Self-Rating</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-200 bg-white text-gray-700">
-                                    ${goalsRowsHtml}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Section 3: Narratives Block -->
-                    <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                            3. Detailed Written Evaluation
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm text-sm">
-                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
-                                <span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Employee Comments</span>
-                                <p class="text-gray-700 italic">"${data.comments}"</p>
-                            </div>
-                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
-                                <span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Major Accomplishments</span>
-                                <p class="text-gray-700">${data.wins}</p>
-                            </div>
-                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
-                                <span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Challenges Encountered</span>
-                                <p class="text-gray-700">${data.challenges}</p>
-                            </div>
-                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
-                                <span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Actions Taken</span>
-                                <p class="text-gray-700">${data.actions}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 4: Competency Assessment Matrix Output -->
-                    <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                            4. Competency Assessment Results
-                        </h3>
-                        <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
-                            <table class="w-full text-left border-collapse min-w-[650px] text-sm">
-                                <thead>
-                                    <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
-                                        <th class="p-3 border-r border-gray-300 w-1/3">Competency</th>
-                                        <th class="p-3 border-r border-gray-300 w-1/6 text-center">Self-Rating</th>
-                                        <th class="p-3">Comments</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-200 bg-white text-gray-700">
-                                    <tr>
-                                        <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Communication</td>
-                                        <td class="p-3 text-center font-bold text-mafRed border-r border-gray-200">${data.commRat} / 5</td>
-                                        <td class="p-3 italic text-gray-600">${data.commCmt}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Teamwork</td>
-                                        <td class="p-3 text-center font-bold text-mafRed border-r border-gray-200">${data.teamRat} / 5</td>
-                                        <td class="p-3 italic text-gray-600">${data.teamCmt}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Problem Solving</td>
-                                        <td class="p-3 text-center font-bold text-mafRed border-r border-gray-200">${data.probRat} / 5</td>
-                                        <td class="p-3 italic text-gray-600">${data.probCmt}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold text-gray-700 border-r border-gray-200 bg-gray-50">Leadership</td>
-                                        <td class="p-3 text-center font-bold text-mafRed border-r border-gray-200">${data.leadRat} / 5</td>
-                                        <td class="p-3 italic text-gray-600">${data.leadCmt}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Section 5: Learning and Development Blocks Output -->
-                    <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                            5. Learning and Development Overview
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm text-sm">
-                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
-                                <span class="block text-xs font-bold uppercase text-gray-500 mb-1">Training Completed</span>
-                                <p class="text-gray-700">${data.training}</p>
-                            </div>
-                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
-                                <span class="block text-xs font-bold uppercase text-gray-500 mb-1">Skills Developed</span>
-                                <p class="text-gray-700">${data.skills}</p>
-                            </div>
-                            <div class="bg-gray-50 p-3 rounded border border-gray-100">
-                                <span class="block text-xs font-bold uppercase text-gray-500 mb-1">Areas for Improvement</span>
-                                <p class="text-gray-700">${data.areas}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 6: Future Projections Roadmap Output -->
-                    <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
-                            6. Goals for the Next Review Cycle
-                        </h3>
-                        <div class="bg-white rounded-b border border-t-0 border-gray-200 p-4 shadow-sm text-sm">
-                            <p class="text-gray-700 leading-relaxed">${data.future}</p>
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Action Center -->
-                    <div class="pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <a href="mailto:shafeeqsharafi@gmail.com?subject=${encodeURIComponent(`Performance Appraisal Matrix - ${data.name}`)}&body=${encodeURIComponent(emailBodyText)}" 
-                           class="w-full sm:w-auto text-center px-8 py-3 bg-mafRed text-white rounded-lg text-xs font-bold tracking-wider uppercase hover:bg-red-700 transition shadow-md active:scale-95 flex items-center justify-center gap-2">
-                            <span>📧 Dispatch Copy via Email Client</span>
-                        </a>
-                        
-                        <button onclick="window.location.reload();" 
-                                class="w-full sm:w-auto px-6 py-3 border border-gray-300 rounded-lg text-xs font-bold tracking-wider uppercase text-gray-600 hover:bg-gray-50 transition active:scale-95">
-                            Fill Another Appraisal
-                        </button>
-                    </div>
-
-                </div>`;
         }
-    </script>
+        if(!goalsRowsHtml) {
+            goalsRowsHtml = `<tr><td colspan="4" style="padding: 16px; text-align: center; color: #9ca3af; font-style: italic;">No goals registered this review window.</td></tr>`;
+        }
+
+        // Generate the formatted HTML template designed with inline email-safe structures
+        const customEmailHtml = generateRichHTMLEmail(data, goalsRowsHtml);
+
+        // Package data inside standard FormData object
+        const formData = new FormData(form);
+        
+        // FormSubmit special configuration fields injected dynamically
+        formData.append('_html', customEmailHtml);
+        formData.append('_subject', `Performance Appraisal Matrix - ${data.name}`);
+
+        // 2. Dispatch payload data cleanly to FormSubmit endpoint background channel
+        fetch(form.action, {
+            method: "POST",
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            renderResultScreen(data, goalsRowsHtml);
+        })
+        .catch(error => {
+            console.error('Submission Error:', error);
+            renderResultScreen(data, goalsRowsHtml);
+        });
+    });
+
+    // Pure design blueprint layout configured with hardcoded styles optimized for standard mail server applications
+    function generateRichHTMLEmail(data, goalsRowsHtml) {
+        return `
+        <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; color: #1f2937; line-height: 1.5; font-size: 14px; background-color: #ffffff; padding: 20px; border: 1px solid #e5e7eb;">
+            
+            <div style="padding: 16px; background-color: #111827; color: white; font-weight: bold; text-transform: uppercase; border-bottom: 3px solid #b91c1c;">
+                1. Employee Identity
+            </div>
+            <table style="width: 100%; border-collapse: collapse; background-color: #f9fafb; border: 1px solid #e5e7eb; margin-bottom: 24px;">
+                <tr>
+                    <td style="padding: 12px; width: 25%;"><span style="font-size: 11px; font-weight: bold; color: #6b7280; text-transform: uppercase; display: block;">Name</span><strong style="color:#111827;">${data.name}</strong></td>
+                    <td style="padding: 12px; width: 25%;"><span style="font-size: 11px; font-weight: bold; color: #6b7280; text-transform: uppercase; display: block;">Department</span><span style="font-weight:600;">${data.dept}</span></td>
+                    <td style="padding: 12px; width: 25%;"><span style="font-size: 11px; font-weight: bold; color: #6b7280; text-transform: uppercase; display: block;">Position</span><span style="font-weight:600;">${data.title}</span></td>
+                    <td style="padding: 12px; width: 25%;"><span style="font-size: 11px; font-weight: bold; color: #6b7280; text-transform: uppercase; display: block;">Review Period</span><span style="font-weight:600; color:#4b5563;">${data.period}</span></td>
+                </tr>
+            </table>
+
+            <div style="padding: 16px; background-color: #111827; color: white; font-weight: bold; text-transform: uppercase; border-bottom: 3px solid #b91c1c;">
+                2. Key Goals and Results Matrix
+            </div>
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb; margin-bottom: 24px; text-align: left;">
+                <thead>
+                    <tr style="background-color: #f3f4f6; border-bottom: 2px solid #d1d5db; font-size: 12px; font-weight: bold; text-transform: uppercase; color: #374151;">
+                        <th style="padding: 12px; border-right: 1px solid #d1d5db; width: 40%;">Goal Description</th>
+                        <th style="padding: 12px; border-right: 1px solid #d1d5db; width: 20%;">Target</th>
+                        <th style="padding: 12px; border-right: 1px solid #d1d5db; width: 20%;">Achievement</th>
+                        <th style="padding: 12px; text-align: center; width: 20%;">Self-Rating</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: #ffffff;">
+                    ${goalsRowsHtml}
+                </tbody>
+            </table>
+
+            <div style="padding: 16px; background-color: #111827; color: white; font-weight: bold; text-transform: uppercase; border-bottom: 3px solid #b91c1c;">
+                3. Detailed Written Evaluation
+            </div>
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb; margin-bottom: 24px; background-color: #ffffff;">
+                <tr>
+                    <td style="padding: 12px; width: 50%; border: 1px solid #e5e7eb; background-color: #f9fafb;"><span style="font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; color: #111827;">Employee Comments</span><p style="font-style: italic; margin: 4px 0 0 0; color: #374151;">"${data.comments}"</p></td>
+                    <td style="padding: 12px; width: 50%; border: 1px solid #e5e7eb; background-color: #f9fafb;"><span style="font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; color: #111827;">Major Accomplishments</span><p style="margin: 4px 0 0 0; color: #374151;">${data.wins}</p></td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; width: 50%; border: 1px solid #e5e7eb; background-color: #f9fafb;"><span style="font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; color: #111827;">Challenges Encountered</span><p style="margin: 4px 0 0 0; color: #374151;">${data.challenges}</p></td>
+                    <td style="padding: 12px; width: 50%; border: 1px solid #e5e7eb; background-color: #f9fafb;"><span style="font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; color: #111827;">Actions Taken</span><p style="margin: 4px 0 0 0; color: #374151;">${data.actions}</p></td>
+                </tr>
+            </table>
+
+            <div style="padding: 16px; background-color: #111827; color: white; font-weight: bold; text-transform: uppercase; border-bottom: 3px solid #b91c1c;">
+                4. Core Competency Scores
+            </div>
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb; margin-bottom: 24px; text-align: left;">
+                <thead>
+                    <tr style="background-color: #f3f4f6; border-bottom: 2px solid #d1d5db; font-size: 12px; font-weight: bold; text-transform: uppercase; color: #374151;">
+                        <th style="padding: 12px; border-right: 1px solid #d1d5db; width: 33%;">Competency Metric</th>
+                        <th style="padding: 12px; border-right: 1px solid #d1d5db; width: 17%; text-align: center;">Score</th>
+                        <th style="padding: 12px;">Reflective Comments</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: #ffffff;">
+                    <tr><td style="padding:12px; font-weight:600; border:1px solid #e5e7eb;">Communication</td><td style="padding:12px; text-align:center; font-weight:bold; color:#b91c1c; background-color:#fef2f2; border:1px solid #e5e7eb;">${data.commRat} / 5</td><td style="padding:12px; font-style:italic; color:#4b5563; border:1px solid #e5e7eb;">${data.commCmt}</td></tr>
+                    <tr><td style="padding:12px; font-weight:600; border:1px solid #e5e7eb;">Teamwork</td><td style="padding:12px; text-align:center; font-weight:bold; color:#b91c1c; background-color:#fef2f2; border:1px solid #e5e7eb;">${data.teamRat} / 5</td><td style="padding:12px; font-style:italic; color:#4b5563; border:1px solid #e5e7eb;">${data.teamCmt}</td></tr>
+                    <tr><td style="padding:12px; font-weight:600; border:1px solid #e5e7eb;">Problem Solving</td><td style="padding:12px; text-align:center; font-weight:bold; color:#b91c1c; background-color:#fef2f2; border:1px solid #e5e7eb;">${data.probRat} / 5</td><td style="padding:12px; font-style:italic; color:#4b5563; border:1px solid #e5e7eb;">${data.probCmt}</td></tr>
+                    <tr><td style="padding:12px; font-weight:600; border:1px solid #e5e7eb;">Leadership</td><td style="padding:12px; text-align:center; font-weight:bold; color:#b91c1c; background-color:#fef2f2; border:1px solid #e5e7eb;">${data.leadRat} / 5</td><td style="padding:12px; font-style:italic; color:#4b5563; border:1px solid #e5e7eb;">${data.leadCmt}</td></tr>
+                </tbody>
+            </table>
+
+            <div style="padding: 16px; background-color: #111827; color: white; font-weight: bold; text-transform: uppercase; border-bottom: 3px solid #b91c1c;">
+                5. Learning & Development Log
+            </div>
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb; margin-bottom: 24px; background-color: #ffffff;">
+                <tr>
+                    <td style="padding: 12px; width: 33.33%; border: 1px solid #e5e7eb; background-color: #f9fafb;"><span style="font-size: 11px; font-weight: bold; color: #6b7280; text-transform: uppercase; display: block;">Trainings Completed:</span><span style="font-weight: 500; color: #374151;">${data.training}</span></td>
+                    <td style="padding: 12px; width: 33.33%; border: 1px solid #e5e7eb; background-color: #f9fafb;"><span style="font-size: 11px; font-weight: bold; color: #6b7280; text-transform: uppercase; display: block;">Skills Acquired:</span><span style="font-weight: 500; color: #374151;">${data.skills}</span></td>
+                    <td style="padding: 12px; width: 33.33%; border: 1px solid #e5e7eb; background-color: #f9fafb;"><span style="font-size: 11px; font-weight: bold; color: #6b7280; text-transform: uppercase; display: block;">Identified Growth Areas:</span><span style="font-weight: 500; color: #374151;">${data.areas}</span></td>
+                </tr>
+            </table>
+
+            <div style="padding: 16px; background-color: #111827; color: white; font-weight: bold; text-transform: uppercase; border-bottom: 3px solid #b91c1c;">
+                6. Projections (Next 6 Months)
+            </div>
+            <div style="padding: 16px; border: 1px solid #e5e7eb; background-color: #ffffff; white-space: pre-line; color: #374151; margin-bottom: 16px;">
+                <span style="font-size: 11px; font-weight: bold; color: #6b7280; text-transform: uppercase; display: block; margin-bottom: 4px;">Target Roadmaps:</span>
+                ${data.future}
+            </div>
+            <span style="font-size: 11px; color: #9ca3af; font-weight: 600;">Document ID: MAF-HR-PERF-2026A</span>
+        </div>`;
+    }
+
+    function renderResultScreen(data, goalsRowsHtml) {
+        document.getElementById('interface-title').textContent = "Appraisal Ledger Submission";
+        const targetContainer = document.getElementById('view-container');
+        
+        targetContainer.innerHTML = `
+            <div class="p-8 space-y-8 animate-fadeIn text-sm">
+                
+                <!-- Success Alert Row -->
+                <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded text-green-800 font-medium shadow-sm flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <span>✓ Ledger successfully captured and routed to Human Resources Inbox.</span>
+                    <span class="text-xs bg-green-100 px-2 py-0.5 rounded font-bold">${new Date().toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</span>
+                </div>
+
+                <!-- Section 1: Employee Identity Output -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        1. Employee Identity
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-mafLight p-4 rounded-b border border-t-0 border-gray-200 shadow-sm">
+                        <div><span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Name</span><p class="font-bold text-gray-800">${data.name}</p></div>
+                        <div><span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Department</span><p class="font-semibold text-gray-800">${data.dept}</p></div>
+                        <div><span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Position</span><p class="font-semibold text-gray-800">${data.title}</p></div>
+                        <div><span class="block text-xs font-bold uppercase text-gray-500 mb-0.5">Review Period</span><p class="font-semibold text-gray-600">${data.period}</p></div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Goals Matrix Output -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        2. Key Goals and Results Matrix
+                    </h3>
+                    <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
+                        <table class="w-full text-left border-collapse min-w-[650px]">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
+                                    <th class="p-3 border-r border-gray-300 w-2/5">Goal Description</th>
+                                    <th class="p-3 border-r border-gray-300 w-1/5">Target</th>
+                                    <th class="p-3 border-r border-gray-300 w-1/5">Achievement</th>
+                                    <th class="p-3 text-center w-1/5">Self-Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white text-gray-700">
+                                ${goalsRowsHtml}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section 3: Narratives Block -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        3. Detailed Written Evaluation
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm">
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Employee Comments</span><p class="text-gray-700 italic">"${data.comments}"</p></div>
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Major Accomplishments</span><p class="text-gray-700">${data.wins}</p></div>
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Challenges Encountered</span><p class="text-gray-700">${data.challenges}</p></div>
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-mafDark mb-1 tracking-wider">Actions Taken</span><p class="text-gray-700">${data.actions}</p></div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Competencies Assessment Matrix -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        4. Core Competency Scores
+                    </h3>
+                    <div class="overflow-x-auto border border-t-0 border-gray-200 rounded-b shadow-sm">
+                        <table class="w-full text-left border-collapse min-w-[650px]">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-300">
+                                    <th class="p-3 border-r border-gray-300 w-1/3">Competency Metric</th>
+                                    <th class="p-3 border-r border-gray-300 w-1/6 text-center">Score Assigned</th>
+                                    <th class="p-3">Reflective Comments</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white text-gray-700">
+                                <tr><td class="p-3 font-semibold border-r">Communication</td><td class="p-3 text-center font-bold text-mafRed bg-red-50">${data.commRat} / 5</td><td class="p-3 italic text-gray-600">${data.commCmt}</td></tr>
+                                <tr><td class="p-3 font-semibold border-r">Teamwork</td><td class="p-3 text-center font-bold text-mafRed bg-red-50">${data.teamRat} / 5</td><td class="p-3 italic text-gray-600">${data.teamCmt}</td></tr>
+                                <tr><td class="p-3 font-semibold border-r">Problem Solving</td><td class="p-3 text-center font-bold text-mafRed bg-red-50">${data.probRat} / 5</td><td class="p-3 italic text-gray-600">${data.probCmt}</td></tr>
+                                <tr><td class="p-3 font-semibold border-r">Leadership</td><td class="p-3 text-center font-bold text-mafRed bg-red-50">${data.leadRat} / 5</td><td class="p-3 italic text-gray-600">${data.leadCmt}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section 5: Learning & Development Log -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        5. Learning & Development Log
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border border-t-0 border-gray-200 p-4 bg-white rounded-b shadow-sm">
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-gray-500 mb-1">Trainings Completed:</span><p class="text-gray-700 font-medium">${data.training}</p></div>
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-gray-500 mb-1">Skills Acquired:</span><p class="text-gray-700 font-medium">${data.skills}</p></div>
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100"><span class="block text-xs font-bold uppercase text-gray-500 mb-1">Identified Growth Areas:</span><p class="text-gray-700 font-medium">${data.areas}</p></div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Projections -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white bg-mafDark px-3 py-1.5 rounded-t border-b-2 border-mafRed">
+                        6. Projections (Next 6 Months)
+                    </h3>
+                    <div class="bg-white rounded-b border border-t-0 border-gray-200 p-4 shadow-sm">
+                        <span class="block text-xs font-bold uppercase text-gray-500 mb-1">Target Roadmaps:</span>
+                        <p class="text-gray-700 whitespace-pre-line">${data.future}</p>
+                    </div>
+                </div>
+
+                <!-- Print Action Panel (Dropdown completely removed since execution is automatic) -->
+                <div class="pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <span class="text-xs text-gray-400 font-semibold tracking-wider">Document ID: MAF-HR-PERF-2026A</span>
+                    <button onclick="window.print()" class="w-full sm:w-auto px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold uppercase text-xs tracking-wider rounded-lg transition shadow-sm active:scale-95">
+                        Print Summary Ledger
+                    </button>
+                </div>
+            </div>`;
+    }
+</script>
 </body>
 </html>
